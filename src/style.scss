@@ -1,0 +1,71 @@
+@import url("https://cdn.jsdelivr.net/font-nanum/1.0/nanummyeongjo/nanummyeongjo.css");
+
+@mixin flexbox-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes breathing {
+    0% {
+        text-shadow: 0 0 0.125rem rgb(50,50,50);
+    }
+    50% {
+        text-shadow: 0 0 0 white;
+    }
+    100% {
+        text-shadow: 0 0 0.125rem rgb(50,50,50);
+    }
+}
+
+$font-size: 5.5rem;
+$dimen-margin: 1.25;
+$dimen-container: $font-size * $dimen-margin * 5;
+
+@mixin han-font {
+    font-weight: 200;
+    font-size: $font-size;
+    line-height: $font-size * $dimen-margin;
+    font-family: 'Nanum Myeongjo', serif;
+    color: transparent;
+    text-shadow: 0 0 0.125rem rgba(255, 255, 255, 0.0625);
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin body-size {
+    width: $dimen-container;
+    height: $dimen-container;
+    text-align: justify;
+}
+
+html, body, .clock-outer, .han {
+    @include flexbox-center;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.clock-outer {
+    transition: opacity 3s cubic-bezier(.76,.01,.83,.67);
+    @include body-size;
+    flex-wrap: wrap;
+
+    .han {
+        @include han-font;
+        flex: 1 0 20%;
+        transition: text-shadow 2s ease;
+    }
+
+    .han.breathing {
+        animation: breathing 6s infinite;
+    }
+
+    .han.on {
+        text-shadow: 0 0 0.125rem white;
+    }
+}
