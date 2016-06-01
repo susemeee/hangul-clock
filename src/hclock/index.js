@@ -28,6 +28,11 @@ export default class hClock {
         this.container = $('body')
         this.container.addClass('hide')
 
+        // IE and edge needs different rendering method
+        if(/(MSIE|Trident|Edge)/.test(navigator.userAgent)) {
+            this.container.addClass('no-blur-support')
+        }
+
         Util.loadStyleSheet(cs.stylesheetPath, () => {
             $(cs.templates.profile()).prependTo(this.container)
         })

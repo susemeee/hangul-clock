@@ -19,6 +19,18 @@
     }
 }
 
+@keyframes breathing-workaround {
+    0% {
+        color: rgb(50,50,50);
+    }
+    50% {
+        color: white;
+    }
+    100% {
+        color: rgb(50,50,50);
+    }
+}
+
 $font-size: 5.5rem;
 $dimen-margin: 1.25;
 $dimen-container: $font-size * $dimen-margin * 5;
@@ -29,6 +41,14 @@ $dimen-container: $font-size * $dimen-margin * 5;
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale;
+    transition: text-shadow 2s ease;
+}
+
+@mixin blurry-font-workaround {
+    filter: blur(1px);
+    color: rgba(255, 255, 255, 0.0625);
+    transition: color 2s ease;
+    text-shadow: none;
 }
 
 @mixin han-font($font-size, $dimen-margin) {
@@ -36,7 +56,6 @@ $dimen-container: $font-size * $dimen-margin * 5;
     font-size: $font-size;
     line-height: $font-size * $dimen-margin;
     font-family: 'Nanum Myeongjo', serif;
-    @include blurry-font;
 }
 
 @mixin body-size {
@@ -69,8 +88,8 @@ body {
 
     .han {
         @include han-font($font-size, $dimen-margin);
+        @include blurry-font;
         flex: 1 0 20%;
-        transition: text-shadow 2s ease;
     }
 
     .han.breathing {
@@ -79,6 +98,22 @@ body {
 
     .han.on {
         text-shadow: 0 0 0.125rem white;
+    }
+}
+
+body.no-blur-support {
+    .clock-outer {
+        .han {
+            @include blurry-font-workaround;
+        }
+
+        .han.breathing {
+            animation: breathing-workaround 6s infinite;
+        }
+
+        .han.on {
+            color: white;
+        }
     }
 }
 
