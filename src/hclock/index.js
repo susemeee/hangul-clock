@@ -29,7 +29,6 @@ export default class hClock {
         this.container.addClass('hide')
 
         Util.loadStyleSheet(cs.stylesheetPath, () => {
-            console.log('load')
             $(cs.templates.profile()).prependTo(this.container)
         })
         this.templateBase = $(cs.templates.parent())
@@ -44,7 +43,6 @@ export default class hClock {
         }
 
         $(window).load(() => {
-            console.log('fontloaded')
             this.showContainer()
         })
     }
@@ -81,8 +79,8 @@ export default class hClock {
         this.synchronized = true
 
         setTimeout(this.run.bind(this), nowNextTick - now)
-        console.log(nowNextTick - now)
-        console.log(nowNextTick.format())
+        // console.log(nowNextTick - now)
+        // console.log(nowNextTick.format())
     }
 
     _applyHardMap(index, num, type) {
@@ -161,7 +159,7 @@ export default class hClock {
         }
 
         let time = givenTime || moment()
-        console.log(time.format('LT'))
+        // console.log(time.format('LT'))
 
         // breathing change
         if(this.order == 'lite') {
@@ -175,10 +173,6 @@ export default class hClock {
             return this._find(time, type)
         })
         targets[0].push.apply(targets[0], targets[1])
-
-        if(this.debug) {
-            console.log(targets[0])
-        }
 
         let target = '.' + targets[0].join(', .')
         this.templateBase.find('.han').removeClass('on')
