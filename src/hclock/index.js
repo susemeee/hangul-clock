@@ -1,18 +1,20 @@
 import * as cs from './constants'
 
 class Util {
-    static loadStyleSheet(src) {
+    static loadStyleSheet(src, onLoadcb) {
         if (document.createStyleSheet){
             document.createStyleSheet(src)
         }
         else {
-            $('head').append($('<link rel="stylesheet" href="'+src+'" type="text/css" media="screen" />'))
+            let css = $('<link rel="stylesheet" href="'+src+'" type="text/css" media="screen" />')
+            css.on('load', onLoadcb)
+            $('head').append(css)
         }
     }
 }
 
 export default class hClock {
-    get debug() { return true }
+    get debug() { return false }
     get order() { return 'lite' }
 
     constructor() {
@@ -23,11 +25,15 @@ export default class hClock {
         }
 
         this.synchronized = null
+        this.container = $('body')
+        this.container.addClass('hide')
 
-        Util.loadStyleSheet(cs.stylesheetPath)
+        Util.loadStyleSheet(cs.stylesheetPath, () => {
+            console.log('load')
+            $(cs.templates.profile()).prependTo(this.container)
+        })
         this.templateBase = $(cs.templates.parent())
-        this.templateBase.css('opacity', '0')
-        this.templateBase.prependTo('body')
+        this.templateBase.prependTo(this.container)
 
         for(let i in cs.order[this.order]) {
             let han = cs.encodedOrder[this.order][i]
@@ -37,18 +43,15 @@ export default class hClock {
             )))
         }
 
-        if(document.fonts) {
-            document.fonts.ready.then(() => {
-                this.showContainer()
-            })
-        } else {
+        $(window).load(() => {
+            console.log('fontloaded')
             this.showContainer()
-        }
+        })
     }
 
     showContainer() {
         setTimeout(() => {
-            this.templateBase.css('opacity', '1')
+            this.container.removeClass('hide')
         }, 100)
     }
 

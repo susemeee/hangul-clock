@@ -92,6 +92,9 @@ export const templates = {
         let elementClassName = elementClasses.join(' ')
         return `<section class="${elementClassName}">${elementText}</section>`
     },
+    profile: function() {
+        return '<div id="logo"><a class="profile" href="https://fb.com/susemeee">@susemeee.</a></div>'
+    }
 }
 
 export const stylesheetPath = 'app.css'

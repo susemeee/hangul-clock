@@ -27,7 +27,6 @@ const config = {
     output: {
         filename: '[name].js',
         path: path.join(__dirname, './dist'),
-        publicPath: '/',
     },
     module: {
         loaders: [
@@ -55,6 +54,10 @@ const config = {
             {
                 test: /\.woff2$/,
                 loaders: ['url-loader?limit=10000&mimetype=application/font-woff2&name=[path][name].[ext]'],
+            },
+            {
+                test: /\.png$/,
+                loader: 'file-loader?name=[name].[ext]&limit=4096'
             },
         ],
     },
