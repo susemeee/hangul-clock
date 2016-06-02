@@ -194,7 +194,7 @@ export default class hClock {
         if(this.order == 'lite') {
             let bindex = time.minute() == 0 ? 14 : 24
             DOMUtil.removeClass(this.templateBase.getElementsByClassName('han'), 'breathing')
-            DOMUtil.addClass(this.templateBase.getElementsByClassName('han')[bindex], 'breathing')
+            DOMUtil.addClass([this.templateBase.getElementsByClassName('han')[bindex]], 'breathing')
         }
 
         // on change
