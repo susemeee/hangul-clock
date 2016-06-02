@@ -1,5 +1,11 @@
-@import url("https://cdn.jsdelivr.net/font-nanum/1.0/nanummyeongjo/nanummyeongjo.css");
 @import url("https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext");
+
+@font-face {
+    font-family: 'Nanum Myeongjo';
+    font-style: normal;
+    font-weight: 400;
+    src: url("./NanumMyeongjo-subset.woff");
+}
 
 @mixin flexbox-center {
     display: flex;
