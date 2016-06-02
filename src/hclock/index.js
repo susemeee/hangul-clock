@@ -1,20 +1,44 @@
 import * as cs from './constants'
 
+class DOMUtil {
+    static create(html) {
+        let dom = document.createElement('div')
+        dom.innerHTML = html
+        return dom.childNodes.length > 1 ? dom.childNodes : dom.childNodes[0]
+    }
+
+    static prepend(parent, child) {
+        parent.insertBefore(child, parent.firstChild)
+    }
+
+    static addClass(parent, className) {
+        [].forEach.call(parent, (p) => {
+            p.classList.add(className)
+        })
+    }
+
+    static removeClass(parent, className) {
+        [].forEach.call(parent, (p) => {
+            p.classList.remove(className)
+        })
+    }
+}
+
 class Util {
     static loadStyleSheet(src, onLoadcb) {
         if (document.createStyleSheet){
             document.createStyleSheet(src)
         }
         else {
-            let css = $('<link rel="stylesheet" href="'+src+'" type="text/css" media="screen" />')
-            css.on('load', onLoadcb)
-            $('head').append(css)
+            let css = DOMUtil.create('<link rel="stylesheet" href="'+src+'" type="text/css" media="screen" />')
+            css.addEventListener('load', onLoadcb)
+            document.getElementsByTagName('head')[0].appendChild(css)
         }
     }
 }
 
 export default class hClock {
-    get debug() { return false }
+    get debug() { return true }
     get order() { return 'lite' }
 
     constructor() {
@@ -25,41 +49,41 @@ export default class hClock {
         }
 
         this.synchronized = null
-        this.container = $('body')
-        this.container.addClass('hide')
+        this.container = document.getElementsByTagName('body')[0]
+        this.container.classList.add('hide')
 
         // IE and edge needs different rendering method
         if(/(MSIE|Trident|Edge)/.test(navigator.userAgent)) {
-            this.container.addClass('no-blur-support')
+            this.container.classList.add('no-blur-support')
         }
 
         Util.loadStyleSheet(cs.stylesheetPath, () => {
-            $(cs.templates.profile()).prependTo(this.container)
+            DOMUtil.prepend(this.container, DOMUtil.create(cs.templates.profile()))
         })
-        this.templateBase = $(cs.templates.parent())
-        this.templateBase.prependTo(this.container)
+        this.templateBase = DOMUtil.create(cs.templates.parent())
+        DOMUtil.prepend(this.container, this.templateBase)
 
         for(let i in cs.order[this.order]) {
             let han = cs.encodedOrder[this.order][i]
-            this.templateBase.append($(cs.templates.element(
+            this.templateBase.appendChild(DOMUtil.create(cs.templates.element(
                 ['han', han.byName, han.byIndex],
                 cs.order[this.order][i]
             )))
         }
 
-        $(window).load(() => {
+        window.addEventListener('load', () => {
             this.showContainer()
         })
     }
 
     showContainer() {
         setTimeout(() => {
-            this.container.removeClass('hide')
+            this.container.classList.remove('hide')
         }, 100)
     }
 
     toggle(n) {
-        this.templateBase.find('.han').eq(n).toggleClass('on')
+        this.templateBase.getElementsByClassName('han')[n].toggle('on')
     }
 
     run() {
@@ -169,8 +193,8 @@ export default class hClock {
         // breathing change
         if(this.order == 'lite') {
             let bindex = time.minute() == 0 ? 14 : 24
-            this.templateBase.find('.han').removeClass('breathing')
-            this.templateBase.find('.han').eq(bindex).addClass('breathing')
+            DOMUtil.removeClass(this.templateBase.getElementsByClassName('han'), 'breathing')
+            DOMUtil.addClass(this.templateBase.getElementsByClassName('han')[bindex], 'breathing')
         }
 
         // on change
@@ -180,7 +204,7 @@ export default class hClock {
         targets[0].push.apply(targets[0], targets[1])
 
         let target = '.' + targets[0].join(', .')
-        this.templateBase.find('.han').removeClass('on')
-        this.templateBase.find(target).addClass('on')
+        DOMUtil.removeClass(this.templateBase.getElementsByClassName('han'), 'on')
+        DOMUtil.addClass(this.templateBase.querySelectorAll(target), 'on')
     }
 }

@@ -65,10 +65,10 @@ const config = {
         cssExtractor,
         new PathRewriterPlugin(),
         new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
             moment: 'moment',
         }),
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        new webpack.optimize.UglifyJsPlugin(),
     ],
     postcss: [
         autoprefixer({
