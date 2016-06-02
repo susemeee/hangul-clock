@@ -36,7 +36,7 @@ const config = {
             },
             {
                 test: /\.js$/,
-                loaders: ['babel-loader?presets[]=es2015'],
+                loaders: ['uglify-loader', 'babel-loader?presets[]=es2015'],
                 exclude: /node_modules/,
             },
             {
