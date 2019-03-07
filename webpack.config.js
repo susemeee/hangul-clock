@@ -7,32 +7,35 @@ const PathRewriterPlugin = require('webpack-path-rewriter')
 
 const sassLoaders = [
     'css-loader',
-    'postcss-loader',
+    {
+        loader: 'postcss-loader',
+        options: {
+            plugins: [
+                autoprefixer({
+                    browsers: ['last 2 versions'],
+                })
+            ],
+        },
+    },
     'sass-loader?importLoaders=1&includePaths[]=' + path.resolve(__dirname, './static')
 ]
 
-const cssExtractor = new ExtractTextPlugin('css', '[name].css')
+const cssExtractor = new ExtractTextPlugin('[name]-[hash].css')
 
 const config = {
-    entry: {
-        app: ['./src/bootstrapper'],
-    },
+    entry: './src/bootstrapper.js',
     resolve: {
-        extensions: ['', '.js', '.scss'],
-        root: [
-            path.join(__dirname, './src'),
-        ],
-        modulesDirectories: ['node_modules'],
+        extensions: ['.js', '.scss'],
     },
     output: {
-        filename: '[name].js',
+        filename: '[name]-[hash].js',
         path: path.join(__dirname, './dist'),
     },
     module: {
         loaders: [
             {
                 test: /\.html$/,
-                loader: PathRewriterPlugin.rewriteAndEmit({name: '[name].html'}),
+                loader: 'html-loader',
             },
             {
                 test: /\.js$/,
@@ -41,11 +44,11 @@ const config = {
             },
             {
                 test: /\.css$/,
-                loader: cssExtractor.extract('style-loader', 'css-loader'),
+                loader: ExtractTextPlugin.extract('style-loader'),
             },
             {
                 test: /\.scss$/,
-                loader: cssExtractor.extract('style-loader', sassLoaders.join('!')),
+                loader: ExtractTextPlugin.extract(sassLoaders),
             },
             {
                 test: /\.woff$/,
@@ -62,6 +65,7 @@ const config = {
         ],
     },
     plugins: [
+        new HtmlWebpackPlugin({ template: 'src/index.html' }),
         cssExtractor,
         new PathRewriterPlugin(),
         new webpack.ProvidePlugin({
@@ -69,11 +73,6 @@ const config = {
         }),
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
         new webpack.optimize.UglifyJsPlugin(),
-    ],
-    postcss: [
-        autoprefixer({
-            browsers: ['last 2 versions'],
-        })
     ],
 }
 
